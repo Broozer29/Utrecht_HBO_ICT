@@ -1,23 +1,25 @@
-from gpiozero import LED
-from flask import Flask
 
-app = Flask(__name__)
-led = LED(17)
 
-@app.route("/")
+from urllib.request import urlopen
 
-def ready():
-    return "Server beschikbaar\n"
-
-@app.route("/knopin")
+hostname='0.0.0.0'
+def httpconnect(action):
+    url='http://{}/{}'.format(hostname,action)
+    try:
+        print(urlopen(url).read().decode())
+    except:
+        print("Verbinding naar {} kon niet gemaakt worden".format(url))
+        exit()
 
 def knopin():
-    return "Knop gedrukt!\n"
-
-@app.route("/knopuit")
-
+    httpconnect('knopin')
 def knopuit():
-    return "Knop losgelaten!\n"
+    httpconnect('knopuit')
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+httpconnect('')
+while True:
+    invoer=input()
+    if invoer=='+':
+        knopin()
+    elif invoer=='-':
+        knopuit()
